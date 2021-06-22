@@ -1,0 +1,88 @@
+# Use root/example as user/password credentials
+version: '3.4'
+
+services:
+
+  redis_1 :
+    image: papawapy/ubuntu_bionic_container:v4.1.1
+    container_name: 1_redis
+    #restart: always
+
+    ports:
+        - 47010:7010 #host_error_rdb
+
+    networks:
+        - default
+    volumes:
+        - ./files/share:/docker_share/
+        - ./files/containers/redis_1/supervisor.conf.d:/config/supervisor.conf.d/common
+        - ./files/containers/redis_1/redis.conf.d:/redis.conf.d
+
+  redis_2 :
+    image: papawapy/ubuntu_bionic_container:v4.1.1
+    container_name: 2_redis
+    #restart: always
+
+    ports:
+        - 47020:7020 #host_error_rdb
+
+    networks:
+        - default
+    volumes:
+        - ./files/share:/docker_share/
+        - ./files/containers/redis_2/supervisor.conf.d:/config/supervisor.conf.d/common
+        - ./files/containers/redis_2/redis.conf.d:/redis.conf.d
+
+  redis_3 :
+    image: papawapy/ubuntu_bionic_container:v4.1.1
+    container_name: 3_redis
+    #restart: always
+
+    ports:
+        - 47030:7030 #host_error_rdb
+
+    networks:
+        - default
+    volumes:
+        - ./files/share:/docker_share/
+        - ./files/containers/redis_3/supervisor.conf.d:/config/supervisor.conf.d/common
+        - ./files/containers/redis_3/redis.conf.d:/redis.conf.d
+
+
+  redis_test_admin :
+    image: erikdubbelboer/phpredisadmin
+    container_name: test_admin_redis
+
+    environment:
+      - ADMIN_USER=admin
+      - ADMIN_PASS=1234
+
+      - REDIS_1_NAME=redis_1
+      - REDIS_1_HOST=1_redis
+      - REDIS_1_PORT=7010
+      - REDIS_1_AUTH=rtest_6654
+
+      - REDIS_2_NAME=redis_2
+      - REDIS_2_HOST=2_redis
+      - REDIS_2_PORT=7020
+      - REDIS_2_AUTH=rtest_6654
+
+      - REDIS_3_NAME=redis_3
+      - REDIS_3_HOST=3_redis
+      - REDIS_3_PORT=7030
+      - REDIS_3_AUTH=rtest_6654
+        
+        
+
+    ports:
+      - "49999:80"
+    networks :
+      - default
+
+    external_links:
+      - 1_redis
+      - 2_redis
+      - 3_redis
+
+        
+          
