@@ -13,3 +13,7 @@ haproxy stats
   IP:49990/haproxy_stats (admin/1234)
   
 
+url :
+  sentinel docker config : https://hub.docker.com/r/bitnami/redis-sentinel/
+  redis-cluster setting : https://crystalcube.co.kr/category/Database/Redis
+
