@@ -57,48 +57,32 @@ services:
 
 
   redis-sentinel:
-    image: 'bitnami/redis-sentinel:latest'
-    environment:
-      - REDIS_MASTER_PASSWORD=rtest_6654
-      - REDIS_MASTER_HOST=redis_1  
-      - REDIS_MASTER_PORT_NUMBER=7010
-    ports:
-      - '26379-26381:26379'
+    image: redis:5.0.8
+    command: sh /files/sh/entry.sh
+    container_name: sentinel-redis
+
+    tty: true
+    
+    #hostname: redis6379
+    #labels:
+    #  - "name=redis"
+    #  - "mode=standalone"
+        #ports:
+            #- 6379:6379
 
     volumes:
       - ./files/share:/docker_share/
       - ./files/containers/sentinel/files:/files
 
+    external_links:
+      - 1_redis
+      - 2_redis
+      - 3_redis
+
     depends_on:
       - redis_1
       - redis_2  
       - redis_3
-
-  redis-haproxy:
-    image: haproxy:latest
-    container_name: haproxy_redis
-    #restart: always
-    networks:
-        - default
-    volumes:
-        - ./files/share:/docker_share/
-        - ./files/containers/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-    links :
-      - redis_1
-      - redis_2
-      - redis_3
-
-    ports:
-      - 49990:10080 #host_error_rdb
-      - 9010:5000
-      - 9020:5001
-        
-            
-    depends_on:
-      - redis_1
-      - redis_2
-      - redis_3
-    
           
 
   redis_test_admin :
@@ -123,31 +107,18 @@ services:
       - REDIS_3_HOST=3_redis
       - REDIS_3_PORT=7030
       - REDIS_3_AUTH=rtest_6654
-
-      - REDIS_4_NAME=master
-      - REDIS_4_HOST=redis-haproxy
-      - REDIS_4_PORT=5000
-      - REDIS_4_AUTH=rtest_6654
         
-      - REDIS_5_NAME=slave
-      - REDIS_5_HOST=redis-haproxy
-      - REDIS_5_PORT=5001
-      - REDIS_5_AUTH=rtest_6654
-                       
+        
 
     ports:
       - "49999:80"
     networks :
       - default
 
-    links :
-      - redis-haproxy
-
     external_links:
       - 1_redis
       - 2_redis
       - 3_redis
-
 
         
           

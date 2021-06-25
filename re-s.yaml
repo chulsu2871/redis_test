@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+    redis-sentinel:
+      image: redis:5.0.8
+      #command: redis-server --requirepass changeme --port 6379
+      container_name: sentinel-redis
+      #hostname: redis6379
+      #labels:
+      #  - "name=redis"
+      #  - "mode=standalone"
+          #ports:
+              #- 6379:6379
+
+      volumes:
+        - ./files/share:/docker_share/
+        - ./files/containers/sentinel/files:/files
+
+      external_links:
+        - 1_redis
+        - 2_redis
+        - 3_redis
+          
+          
